@@ -13,6 +13,8 @@ class AppSpider(scrapy.Spider):
     def start_requests(self):
         urls = [
             'https://apps.apple.com/us/app/id387682726',  # Taobao
+            'https://apps.apple.com/us/app/wechat/id414478124',  # WeChat
+            'https://apps.apple.com/cn/app/wechat/id414478124',  # 微信
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -27,7 +29,9 @@ class AppSpider(scrapy.Spider):
         url = response.url
         # self.log(f"{url}")
 
-        title: str = response.css("title::text").re(r"\s+\u200e?(.*)\s+on the App[\s|\xa0]Store")[0]
+        # title: str = response.css("title::text").re(r"\s+\u200e?(.*)\s+on the App[\s|\xa0]Store")[0]
+        title: str = response.css("header.product-header.app-header > h1::text").get().strip()
+        title: str = ''.join(filter(str.isprintable, title))
         # self.log(f'{title}')
 
         picture_urls: SelectorList = response.css("div.l-row > div > picture.we-artwork > source::attr(srcset)")
