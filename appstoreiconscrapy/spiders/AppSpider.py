@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 import scrapy
 from scrapy.http import HtmlResponse
@@ -33,7 +33,9 @@ class AppSpider(scrapy.Spider):
         picture_urls: SelectorList = response.css("div.l-row > div > picture.we-artwork > source::attr(srcset)")
         # self.log(picture_urls.getall())
 
-        version: str = response.css("div.l-row > p.l-column::text").re(r"Version\s+(.*)")[0]
+        version: Union[str, None] = x[1] if (
+            x := response.css("div.l-row > p.l-column::text").re(r"(Version|版本)\s+(.*)")
+        ) else None
         # self.log(version)
 
         ref_links: List[str] = response.css("a.we-lockup::attr(href)").getall()
