@@ -2,9 +2,10 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
+from typing import List
 
 import scrapy
-from itemloaders.processors import TakeFirst, MapCompose
+from itemloaders.processors import TakeFirst, MapCompose, Compose
 
 
 def keep_only_printable(input):
@@ -28,4 +29,7 @@ class AppItem(scrapy.Item):
     version = scrapy.Field(
         output_processor=TakeFirst(),
     )
-    icon_urls = scrapy.Field()
+    icon_urls = scrapy.Field(
+        input_processor=TakeFirst(),
+        output_processor=MapCompose(lambda x: x.split(","), MapCompose(str.strip)),
+    )
