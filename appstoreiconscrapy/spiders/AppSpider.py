@@ -12,9 +12,10 @@ class AppSpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            'https://apps.apple.com/us/app/id387682726',  # Taobao
-            'https://apps.apple.com/us/app/wechat/id414478124',  # WeChat
-            'https://apps.apple.com/cn/app/wechat/id414478124',  # 微信
+            'https://apps.apple.com/us/app/id387682726?l=zh',  # Taobao
+            'https://apps.apple.com/us/app/wechat/id414478124?l=zh',  # WeChat
+            # 国区
+            'https://apps.apple.com/cn/app/wechat/id414478124?l=zh',  # 微信
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -52,4 +53,4 @@ class AppSpider(scrapy.Spider):
         )
 
         for x in ref_links:
-            yield scrapy.Request(url=x, callback=self.parse)
+            yield scrapy.Request(url=x + '?l=zh', callback=self.parse)
