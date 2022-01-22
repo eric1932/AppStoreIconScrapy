@@ -6,6 +6,10 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 BOT_NAME = 'appstoreiconscrapy'
 
@@ -89,5 +93,5 @@ ITEM_PIPELINES = {
 
 # Custom
 LOG_LEVEL = 'INFO'
-MONGO_URI = ''
-MONGO_DATABASE = ''
+MONGO_URI = getenv('MONGO_URI')
+MONGO_DATABASE = getenv('MONGO_DATABASE')
