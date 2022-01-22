@@ -38,7 +38,7 @@ class MongoPipeline:
     def process_item(self, item, spider):
         # self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
         self.db[self.collection_name].update_one({
-            'name': item['name'],
+            'bundle_id': item['bundle_id'],
             'version': item.get('version', None),  # in case of null version
         }, {
             '$set': ItemAdapter(item).asdict(),
