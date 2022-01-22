@@ -39,7 +39,7 @@ class MongoPipeline:
         # self.db[self.collection_name].insert_one(ItemAdapter(item).asdict())
         self.db[self.collection_name].update_one({
             'name': item['name'],
-            'version': item['version'],
+            'version': item.get('version', None),  # in case of null version
         }, {
             '$set': ItemAdapter(item).asdict(),
         }, upsert=True)
