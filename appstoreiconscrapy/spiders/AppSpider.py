@@ -27,13 +27,13 @@ class AppSpider(scrapy.Spider):
         url = response.url
         # self.log(f"{url}")
 
-        title: str = x[0] if (x := response.css("title::text").re(r"\s+\u200e?(.*)\s+on the App[\s|\xa0]Store")) else ""
+        title: str = response.css("title::text").re(r"\s+\u200e?(.*)\s+on the App[\s|\xa0]Store")[0]
         # self.log(f'{title}')
 
         picture_urls: SelectorList = response.css("div.l-row > div > picture.we-artwork > source::attr(srcset)")
         # self.log(picture_urls.getall())
 
-        version: str = response.css("div.l-row > p.l-column::text").get()
+        version: str = response.css("div.l-row > p.l-column::text").re(r"Version\s+(.*)")[0]
         # self.log(version)
 
         ref_links: List[str] = response.css("a.we-lockup::attr(href)").getall()
