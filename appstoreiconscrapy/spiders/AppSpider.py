@@ -46,4 +46,4 @@ class AppSpider(scrapy.Spider):
         )
 
         for x in ref_links:
-            yield scrapy.Request(x, callback=self.parse)
+            yield scrapy.Request(url=x, callback=self.parse)
