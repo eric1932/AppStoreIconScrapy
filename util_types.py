@@ -30,6 +30,7 @@ class RankingResult(dict):
     kind: str
     artworkUrl100: str
     genres: List[Genre]
+    url: str
 
     def __init__(self, *args, **kwargs):
         super(RankingResult, self).__init__(*args, **kwargs)
