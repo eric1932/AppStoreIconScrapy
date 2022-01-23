@@ -2,7 +2,7 @@ import json
 from typing import Dict, List
 from urllib.request import urlopen
 
-from types import Chart, Region, RankingResult
+from util_types import Chart, Region, RankingResult
 
 
 def get_top_ranking_apps(region: Region = Region.CN,
