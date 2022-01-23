@@ -5,12 +5,20 @@ from itemloaders import ItemLoader
 from scrapy.http import HtmlResponse
 
 from appstoreiconscrapy.items import AppItem
+from util_types import Region, Chart
+from utils import get_top_ranking_apps
 
 
 class AppSpider(scrapy.Spider):
     name = "apps"
 
     def start_requests(self):
+        """
+
+        :return:
+        """
+
+        ''' unused
         urls = [
             'https://apps.apple.com/us/app/id387682726?l=zh',  # Taobao
             'https://apps.apple.com/us/app/wechat/id414478124?l=zh',  # WeChat
@@ -21,6 +29,16 @@ class AppSpider(scrapy.Spider):
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
+        '''
+
+        for each_query in [
+            get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_FREE),
+            get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_PAID),
+            get_top_ranking_apps(region=Region.US, chart=Chart.TOP_FREE),
+            get_top_ranking_apps(region=Region.US, chart=Chart.TOP_PAID),
+        ]:
+            for each_result in each_query:
+                yield scrapy.Request(url=each_result.url, callback=self.parse)
 
     def parse(self, response: HtmlResponse):
         loader = ItemLoader(item=AppItem(), selector=response)
