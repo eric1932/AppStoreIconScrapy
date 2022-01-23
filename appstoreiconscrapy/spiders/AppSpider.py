@@ -1,4 +1,5 @@
-from typing import List
+from enum import Enum
+from typing import List, Dict, Any
 
 import scrapy
 from itemloaders import ItemLoader
@@ -11,6 +12,9 @@ from utils import get_top_ranking_apps
 
 class AppSpider(scrapy.Spider):
     name = "apps"
+
+    class ParseOptions(str, Enum):
+        TERMINATE = 'terminate'
 
     def start_requests(self):
         """
@@ -52,20 +56,19 @@ class AppSpider(scrapy.Spider):
             get_top_ranking_apps(region=Region.US, chart=Chart.TOP_PAID, result_limit=200),
         ]:
             for each_result in each_query:
-                yield scrapy.Request(url=each_result.url, callback=self.parse_terminate)
+                yield scrapy.Request(url=each_result.url, callback=self.parse, cb_kwargs={
+                    self.ParseOptions.TERMINATE: True
+                })
 
-    def parse_terminate(self, response: HtmlResponse, **kwargs):
+    def parse(self, response: HtmlResponse, **kwargs: Dict[ParseOptions, Any]):
         loader = ItemLoader(item=AppItem(), selector=response)
         loader.add_value("bundle_id", response.url, re=r"(id[0-9]+)")
         loader.add_css("name", "header.product-header.app-header > h1::text")
         loader.add_css("icon_urls", "div.l-row > div > picture.we-artwork > source::attr(srcset)")
         loader.add_css("version", "div.l-row > p.l-column::text", re=r"(?:Version|版本)\s+(.*)")
-
         yield loader.load_item()
 
-    def parse(self, response: HtmlResponse, **kwargs):
-        self.parse_terminate(response)
-
-        ref_links: List[str] = response.css("a.we-lockup::attr(href)").getall()
-        for x in ref_links:
-            yield scrapy.Request(url=x, callback=self.parse)
+        if not kwargs.get(self.ParseOptions.TERMINATE, False):
+            ref_links: List[str] = response.css("a.we-lockup::attr(href)").getall()
+            for x in ref_links:
+                yield scrapy.Request(url=x, callback=self.parse)
