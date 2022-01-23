@@ -42,7 +42,6 @@ class AppSpider(scrapy.Spider):
 
     def parse(self, response: HtmlResponse):
         loader = ItemLoader(item=AppItem(), selector=response)
-        # loader.add_value("bundle_id", re.search(self.re_bundle_id, response.url))
         loader.add_value("bundle_id", response.url, re=r"(id[0-9]+)")
         loader.add_css("name", "header.product-header.app-header > h1::text")
         loader.add_css("icon_urls", "div.l-row > div > picture.we-artwork > source::attr(srcset)")
