@@ -62,20 +62,23 @@ class AppSpider(scrapy.Spider):
         #     for each_result in each_query:
         #         yield scrapy.Request(url=each_result.url, callback=self.parse)
 
-        # terminated top-100 ranking discovery
         for each_query in [
+            # TEST
+            # get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_FREE, result_limit=1),
+
             # Custom
             [
                 RankingResult(url="https://apps.apple.com/us/app/chowbus-asian-food-delivery/id1053160529"),  # Chowbus
+                RankingResult(url='https://apps.apple.com/us/app/%E6%B7%98%E5%AE%9D-%E5%A4%AA%E5%A5%BD%E9%80%9B%E4%BA%86%E5%90%A7/id387682726'),  # Taobao
+                RankingResult(url='https://apps.apple.com/us/app/%E6%B7%98%E5%AE%9Dlite/id1021442712'),  # Taobao Lite
+                RankingResult(url='https://apps.apple.com/us/app/cvs-pharmacy/id395545555'),  # CVS
             ],
 
-            # test
-            # get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_FREE, result_limit=1),
-
+            # Top-n ranking discovery
             # get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_FREE, result_limit=200),
             # get_top_ranking_apps(region=Region.CN, chart=Chart.TOP_PAID, result_limit=50),
-            get_top_ranking_apps(region=Region.US, chart=Chart.TOP_FREE, result_limit=200),
-            get_top_ranking_apps(region=Region.US, chart=Chart.TOP_PAID, result_limit=200),
+            # get_top_ranking_apps(region=Region.US, chart=Chart.TOP_FREE, result_limit=200),
+            # get_top_ranking_apps(region=Region.US, chart=Chart.TOP_PAID, result_limit=200),
         ]:
             for each_result in each_query:
                 yield scrapy.Request(url=each_result.url, callback=self.parse, cb_kwargs={
