@@ -30,7 +30,7 @@ class AppSpider(scrapy.Spider):
     ]
 
     class ParseOptions(str, Enum):
-        TERMINATE = 'terminate'
+        NO_DISCOVER = 'terminate'
         DOWNLOAD_ICON = 'download_icon'
 
     def start_requests(self):
@@ -79,8 +79,8 @@ class AppSpider(scrapy.Spider):
         ]:
             for each_result in each_query:
                 yield scrapy.Request(url=each_result.url, callback=self.parse, cb_kwargs={
-                    # self.ParseOptions.TERMINATE: True,
-                    # self.ParseOptions.DOWNLOAD_ICON: True,
+                    # self.ParseOptions.NO_DISCOVER: True,  # default False
+                    self.ParseOptions.DOWNLOAD_ICON: True,  # default False
                 })
 
     def parse(self, response: HtmlResponse, **kwargs: Dict[ParseOptions, Any]):
@@ -92,7 +92,7 @@ class AppSpider(scrapy.Spider):
         item = loader.load_item()
         yield item
 
-        if not kwargs.get(self.ParseOptions.TERMINATE, False):
+        if not kwargs.get(self.ParseOptions.NO_DISCOVER, False):
             ref_links: List[str] = response.css("a.we-lockup::attr(href)").getall()
             for x in ref_links:
                 yield scrapy.Request(url=x, callback=self.parse)
