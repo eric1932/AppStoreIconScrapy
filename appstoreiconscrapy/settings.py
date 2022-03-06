@@ -6,6 +6,8 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
+
 from dotenv import load_dotenv
 from os import getenv
 
@@ -67,7 +69,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'appstoreiconscrapy.pipelines.MongoPipeline': 300,
+    'appstoreiconscrapy.pipelines.MongoPipeline': 300,
+    # 'appstoreiconscrapy.pipelines.DownloadImagePipeline': 301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -95,3 +98,6 @@ ITEM_PIPELINES = {
 LOG_LEVEL = 'INFO'
 MONGO_URI = getenv('MONGO_URI')
 MONGO_DATABASE = getenv('MONGO_DATABASE')
+IMG_DOWNLOAD_PATH = "down_images"
+if not os.path.exists(IMG_DOWNLOAD_PATH):
+    os.mkdir(IMG_DOWNLOAD_PATH)
